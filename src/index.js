@@ -14,18 +14,18 @@ const { SLACK_TOKEN: slackToken, PORT } = process.env
 const port = PORT || 3000;
 //Check whether the slack token is exist or not.
 if (!slackToken) {
-    console.error('missing environment variables SLACK_TOKEN')
+    console.error('Missing environment variables SLACK_TOKEN')
     process.exit(1)
 }
 const slashCommand = slashCommandFactory(slackToken)
 
 app.post('/', (req, res) => {
     slashCommand(req.body)
-      .then((result) => {
-        return res.json(result)
-      })
-      .catch(console.error) 
-  })
+        .then((result) => {
+            return res.json(result)
+        })
+        .catch(console.error)
+})
 
 
 app.listen(port, () => {
