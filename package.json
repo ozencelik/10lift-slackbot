@@ -1,7 +1,7 @@
 {
   "name": "10lift-slackbot",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is a slack bot project to engage your team while tracking your activities time.",
   "main": "index.js",
   "scripts": {
     "start": "node src/index.js",
