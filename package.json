@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/index.js",
+    "test": "nodemon src/index.js"
   },
   "author": "Özenç Çelik",
   "license": "MIT",
@@ -12,6 +13,7 @@
     "body-parser": "^1.19.0",
     "dotenv": "^9.0.2",
     "express": "^4.17.1",
+    "nodemon": "^2.0.7",
     "pg": "^8.6.0",
     "string-tokenizer": "0.0.8"
   }
