@@ -4,9 +4,9 @@ var pool;
 const properResponse = (command, user_id, user_name, time) => {
     switch (command) {
         case '/running':
-            return insertNewActivity(command, user_id, user_name, time)
         case '/biking':
-            return 'Unauthorized: Be sure you configured the integration to use a valid API key'
+            //insertNewActivity(command, user_id, user_name, time)
+            return 'Recorded !';
         case '/leaderboard':
             return getLeaderboard()
         default:
@@ -24,14 +24,13 @@ const getUserBySlackId = (slack_id) => {
                 if (error) {
                     return resolve(new Error(error.message))
                 }
-                //console.log('getUserBySlackID : ' + results.rows[0].id);
                 return resolve(results.rows[0]);
             }
         );
     });
 }
 
-const insertUser = (slack_id, name) => {
+function insertUser(slack_id, name) {
     return new Promise((resolve, reject) => {
         pool.query(
             "INSERT INTO users (slack_id, name) VALUES ($1, $2)",
@@ -40,8 +39,7 @@ const insertUser = (slack_id, name) => {
                 if (error) {
                     return resolve(new Error(error.message))
                 }
-                console.log('User inserted successfully');
-                return getUserBySlackId(slack_id);
+                return resolve(getUserBySlackId(slack_id));
             }
         );
     });
@@ -49,7 +47,7 @@ const insertUser = (slack_id, name) => {
 //#endregion
 
 // #region Activity Methods
-const getActivityByCommand = (command) => {
+function getActivityByCommand(command) {
     return new Promise((resolve, reject) => {
         pool.query(
             "SELECT * FROM activity WHERE name=$1 LIMIT 1",
@@ -66,37 +64,34 @@ const getActivityByCommand = (command) => {
 //#endregion
 
 // #region User Activity Methods
-const insertNewActivity = (command, user_id, user_name, time) => {
+async function insertNewActivity(command, user_id, user_name, time) {
     if (!pool) {
+        console.log('Pool initialized.');
         buildPool();
     }
 
-    var user = getUserBySlackId(user_id);
+    var user = await getUserBySlackId(user_id);
     if (!user) {
-        user = insertUser(user_id, user_name);
+        user = await insertUser(user_id, user_name);
     }
 
-    var activity = getActivityByCommand(command);
+    var activity = await getActivityByCommand(command);
     if (user && activity) {
-        console.log(user.id + ' - ' + activity.id + ' - ' + time + ' * ' + activity.multiplication_factor);
-        return insertUserActivity(user.id, activity.id, (time * activity.multiplication_factor), new Date())
+        return await insertUserActivity(user.id, activity.id, (time * activity.multiplication_factor), new Date())
     }
-
     return 'User and/or activity not found !';
 }
 
-const insertUserActivity = (user_id, activity_id, point, created_on) => {
-    console.log('insertUserActivity');
-    console.log(user_id + ' - ' + activity_id + ' - ' + point + ' - ' + created_on);
+function insertUserActivity(user_id, activity_id, point, created_on) {
     return new Promise((resolve, reject) => {
         pool.query(
             "INSERT INTO user_activity (user_id, activity_id, point, created_on) VALUES ($1, $2, $3, $4)",
-            [user_id, activity_id, point, created_on],
+            [3, activity_id, point, created_on],
             (error, results) => {
                 if (error) {
                     return resolve(new Error(error.message))
                 }
-                return resolve('Recorded');
+                return 'Recorded';
             }
         );
     });
