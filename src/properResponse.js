@@ -10,7 +10,7 @@ async function properResponse(command, user_id, user_name, time) {
     switch (command) {
         case '/running':
         case '/biking':
-            //insertNewActivity(command, user_id, user_name, time)
+            insertNewActivity(command, user_id, user_name, time)
             return 'Recorded !';
         case '/leaderboard':
             return await getLeaderboard();

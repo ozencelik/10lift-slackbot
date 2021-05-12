@@ -52,14 +52,14 @@ async function slashCommandFactory(slackToken, body) {
             }
             return resolve({
                 text: 'Your activity time saved successfully !',
-                attachments: [createAttachment('Recorded ✓')]
+                attachments: [createAttachment(properResponse)]
             })
         }
         else {
             return resolve({
 
                 text: '----- Top 3 -----',
-                attachments: [createAttachment('Rank User  Activity Point\n1- marry.jane /biking 25.50\n2- john.doe /biking 24.00\n3- ozenc.celik /running 20.00')]
+                attachments: [createAttachment(properResponse)]
             })
         }
     });
