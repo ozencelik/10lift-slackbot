@@ -1,20 +1,29 @@
 const Pool = require("pg").Pool;
 var pool;
 
-const properResponse = (command, user_id, user_name, time) => {
+async function properResponse(command, user_id, user_name, time) {
+    if (!pool) {
+        console.log('Pool initialized.');
+        buildPool();
+    }
+
     switch (command) {
         case '/running':
         case '/biking':
             //insertNewActivity(command, user_id, user_name, time)
             return 'Recorded !';
         case '/leaderboard':
-            return getLeaderboard()
+            //return 'Liste';
+            var response = await getLeaderboard();
+            console.log('asdsad');
+            return response.message;
         default:
             return new Error('Command not found')
     }
 }
 
 // #region User Methods
+
 const getUserBySlackId = (slack_id) => {
     return new Promise((resolve, reject) => {
         pool.query(
@@ -22,7 +31,7 @@ const getUserBySlackId = (slack_id) => {
             [slack_id],
             (error, results) => {
                 if (error) {
-                    return resolve(new Error(error.message))
+                    return reject(new Error(error.message))
                 }
                 return resolve(results.rows[0]);
             }
@@ -30,16 +39,18 @@ const getUserBySlackId = (slack_id) => {
     });
 }
 
-function insertUser(slack_id, name) {
+async function insertUser(slack_id, name) {
     return new Promise((resolve, reject) => {
         pool.query(
             "INSERT INTO users (slack_id, name) VALUES ($1, $2)",
             [slack_id, name],
             (error, results) => {
                 if (error) {
-                    return resolve(new Error(error.message))
+                    return reject(new Error(error.message))
                 }
-                return resolve(getUserBySlackId(slack_id));
+                var fuckingUser = await getUserBySlackId(slack_id);
+                console.log('FuckingUser' + fuckingUser);
+                return resolve(await getUserBySlackId(slack_id));
             }
         );
     });
@@ -47,14 +58,14 @@ function insertUser(slack_id, name) {
 //#endregion
 
 // #region Activity Methods
-function getActivityByCommand(command) {
+async function getActivityByCommand(command) {
     return new Promise((resolve, reject) => {
         pool.query(
             "SELECT * FROM activity WHERE name=$1 LIMIT 1",
             [command],
             (error, results) => {
                 if (error) {
-                    return resolve(new Error(error.message))
+                    return reject(new Error(error.message))
                 }
                 return resolve(results.rows[0]);
             }
@@ -65,11 +76,6 @@ function getActivityByCommand(command) {
 
 // #region User Activity Methods
 async function insertNewActivity(command, user_id, user_name, time) {
-    if (!pool) {
-        console.log('Pool initialized.');
-        buildPool();
-    }
-
     var user = await getUserBySlackId(user_id);
     if (!user) {
         user = await insertUser(user_id, user_name);
@@ -82,14 +88,14 @@ async function insertNewActivity(command, user_id, user_name, time) {
     return 'User and/or activity not found !';
 }
 
-function insertUserActivity(user_id, activity_id, point, created_on) {
+async function insertUserActivity(user_id, activity_id, point, created_on) {
     return new Promise((resolve, reject) => {
         pool.query(
             "INSERT INTO user_activity (user_id, activity_id, point, created_on) VALUES ($1, $2, $3, $4)",
-            [3, activity_id, point, created_on],
+            [user_id, activity_id, point, created_on],
             (error, results) => {
                 if (error) {
-                    return resolve(new Error(error.message))
+                    return reject(new Error(error.message))
                 }
                 return 'Recorded';
             }
@@ -97,20 +103,20 @@ function insertUserActivity(user_id, activity_id, point, created_on) {
     });
 }
 
-const getLeaderboard = () => {
-    return '1. ozenc.celik 50\n2. marry.jane 25\n3. john.doe 20';
-
-
-    pool.query(
-        "SELECT * FROM user_activity",
-        [],
-        (error, results) => {
-            if (error) {
-                new Error(error.message)
+async function getLeaderboard() {
+    //return '1. ozenc.celik 50\n2. marry.jane 25\n3. john.doe 20';
+    return new Promise((resolve, reject) => {
+        pool.query(
+            "SELECT * FROM user_activity",
+            [],
+            (error, results) => {
+                if (error) {
+                    return reject(new Error(error.message))
+                }
+                return resolve({ message: 'Recorded' });
             }
-            return results.rows;
-        }
-    );
+        );
+    });
 }
 //#endregion
 
