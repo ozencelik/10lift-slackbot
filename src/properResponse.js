@@ -14,9 +14,7 @@ async function properResponse(command, user_id, user_name, time) {
             return 'Recorded !';
         case '/leaderboard':
             //return 'Liste';
-            var response = await getLeaderboard();
-            console.log('asdsad');
-            return response.message;
+            return await getLeaderboard();
         default:
             return new Error('Command not found')
     }
@@ -48,9 +46,7 @@ async function insertUser(slack_id, name) {
                 if (error) {
                     return reject(new Error(error.message))
                 }
-                var fuckingUser = await getUserBySlackId(slack_id);
-                console.log('FuckingUser' + fuckingUser);
-                return resolve(await getUserBySlackId(slack_id));
+                return resolve(getUserBySlackId(slack_id));
             }
         );
     });
@@ -103,8 +99,9 @@ async function insertUserActivity(user_id, activity_id, point, created_on) {
     });
 }
 
-async function getLeaderboard() {
+const getLeaderboard = async () => {
     //return '1. ozenc.celik 50\n2. marry.jane 25\n3. john.doe 20';
+
     return new Promise((resolve, reject) => {
         pool.query(
             "SELECT * FROM user_activity",
@@ -113,7 +110,7 @@ async function getLeaderboard() {
                 if (error) {
                     return reject(new Error(error.message))
                 }
-                return resolve({ message: 'Recorded' });
+                return resolve(JSON.stringify(results.rows));
             }
         );
     });
