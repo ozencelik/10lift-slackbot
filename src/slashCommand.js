@@ -18,47 +18,55 @@ const createAttachment = (result) => {
     if (result.constructor === Error) {
         return createErrorAttachment(result)
     }
-
     return createSuccessAttachment(result)
 }
 
-const slashCommandFactory = (slackToken) => (body) => new Promise((resolve, reject) => {
-    if (!body) {
-        return resolve({
-            text: '',
-            attachments: [createErrorAttachment(new Error('Invalid body'))]
-        })
-    }
-
-    if (slackToken !== body.token) {
-        return resolve({
-            text: '',
-            attachments: [createErrorAttachment(new Error('Invalid token'))]
-        })
-    }
-
-
-    const time = commandParser(body.text)
-
-    if (body.command != '/leaderboard') {
-        let error
-        if ((error = validateCommandInput(time))) {
+async function slashCommandFactory(slackToken, body) {
+    return new Promise((resolve, reject) => {
+        if (!body) {
             return resolve({
                 text: '',
-                attachments: [createErrorAttachment(error)]
+                attachments: [createErrorAttachment(new Error('Invalid body'))]
             })
         }
-        return resolve({
-            text: 'Your activity time saved successfully !',
-            attachments: [createAttachment(properResponse(body.command, body.user_id, body.user_name, time))]
-        })
-    }
-    else {
-        return resolve({
-            text: '----- Top 3 -----',
-            attachments: [createAttachment(properResponse(body.command, body.user_id, body.user_name, time))]
-        })
-    }
-})
+
+        if (slackToken !== body.token) {
+            return resolve({
+                text: '',
+                attachments: [createErrorAttachment(new Error('Invalid token'))]
+            })
+        }
+
+
+        const time = commandParser(body.text)
+        const properResponse = getProperResponse(body.command, body.user_id, body.user_name, time);
+
+
+        if (body.command != '/leaderboard') {
+            let error
+            if ((error = validateCommandInput(time))) {
+                return resolve({
+                    text: '',
+                    attachments: [createErrorAttachment(error)]
+                })
+            }
+            return resolve({
+                text: 'Your activity time saved successfully !',
+                attachments: [createAttachment('Recorded ✓')]
+            })
+        }
+        else {
+            return resolve({
+
+                text: '----- Top 3 -----',
+                attachments: [createAttachment('Rank User  Activity Point\n1- marry.jane /biking 25.50\n2- john.doe /biking 24.00\n3- ozenc.celik /running 20.00')]
+            })
+        }
+    });
+}
+
+async function getProperResponse(command, user_id, user_name, time) {
+    return await properResponse(command, user_id, user_name, time);
+}
 
 module.exports = slashCommandFactory

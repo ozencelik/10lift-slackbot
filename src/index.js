@@ -17,14 +17,9 @@ if (!slackToken) {
     console.error('Missing environment variables SLACK_TOKEN')
     process.exit(1)
 }
-const slashCommand = slashCommandFactory(slackToken)
 
-app.post('/', (req, res) => {
-    slashCommand(req.body)
-        .then((result) => {
-            return res.json(result)
-        })
-        .catch(console.error)
+app.post('/', async (req, res) => {
+    res.json(await slashCommandFactory(slackToken, req.body));
 })
 
 

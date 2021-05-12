@@ -13,7 +13,6 @@ async function properResponse(command, user_id, user_name, time) {
             //insertNewActivity(command, user_id, user_name, time)
             return 'Recorded !';
         case '/leaderboard':
-            //return 'Liste';
             return await getLeaderboard();
         default:
             return new Error('Command not found')
@@ -99,18 +98,25 @@ async function insertUserActivity(user_id, activity_id, point, created_on) {
     });
 }
 
-const getLeaderboard = async () => {
-    //return '1. ozenc.celik 50\n2. marry.jane 25\n3. john.doe 20';
-
+async function getLeaderboard() {
     return new Promise((resolve, reject) => {
         pool.query(
-            "SELECT * FROM user_activity",
+            "SELECT u.name AS User, a.name AS Activity, sub.point AS Point FROM ( SELECT ua.user_id, ua.activity_id, SUM(ua.point) AS point FROM user_activity ua GROUP BY ua.user_id, ua.activity_id ORDER BY SUM(ua.point) DESC ) AS sub INNER JOIN users u ON sub.user_id = u.id INNER JOIN activity a ON sub.activity_id = a.id"
+            //"WHERE ua.created_on >= (NOW() - interval '1 hour')"+
+            ,
             [],
             (error, results) => {
                 if (error) {
-                    return reject(new Error(error.message))
+                    return reject(new Error(error.message));
                 }
-                return resolve(JSON.stringify(results.rows));
+                var resultText = '';
+                for (i = 0; i < results.rows.length; i++) {
+                    if (i == 0) {
+                        resultText = resultText + '   User     Activity  Point\n';
+                    }
+                    resultText = resultText + ((i + 1) + '- ' + results.rows[i].user + ' ' + results.rows[i].activity + ' ' + results.rows[i].point + '\n');
+                }
+                return resolve(resultText);
             }
         );
     });
