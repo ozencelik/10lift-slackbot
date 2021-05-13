@@ -13,7 +13,9 @@ async function properResponse(command, user_id, user_name, time) {
             insertNewActivity(command, user_id, user_name, time)
             return 'Recorded !';
         case '/leaderboard':
-            return await getLeaderboard();
+            const leaderboardResult = await getLeaderboard();
+            const mostActiveUsersResult = await getMostActiveActivityOfUser();
+            return leaderboardResult + mostActiveUsersResult;
         default:
             return new Error('Command not found')
     }
@@ -101,12 +103,11 @@ async function insertUserActivity(user_id, activity_id, point, created_on) {
 async function getLeaderboard() {
     return new Promise((resolve, reject) => {
         pool.query(
-            "SELECT u.name AS User, a.name AS Activity, sub.point AS Point FROM ( SELECT ua.user_id, ua.activity_id, SUM(ua.point) AS point FROM user_activity ua GROUP BY ua.user_id, ua.activity_id ORDER BY SUM(ua.point) DESC ) AS sub INNER JOIN users u ON sub.user_id = u.id INNER JOIN activity a ON sub.activity_id = a.id"
-            //"WHERE ua.created_on >= (NOW() - interval '1 hour')"+
-            ,
+            "SELECT u.name AS User, a.name AS Activity, sub.point AS Point FROM ( SELECT ua.user_id, ua.activity_id, SUM(ua.point) AS point FROM user_activity ua WHERE ua.created_on >= (NOW() - interval '1 hour') GROUP BY ua.user_id, ua.activity_id ORDER BY SUM(ua.point) DESC ) AS sub INNER JOIN users u ON sub.user_id = u.id INNER JOIN activity a ON sub.activity_id = a.id LIMIT 3",
             [],
             (error, results) => {
                 if (error) {
+                    console.log('\n what \n');
                     return reject(new Error(error.message));
                 }
                 var resultText = '';
@@ -115,6 +116,28 @@ async function getLeaderboard() {
                         resultText = resultText + '   User     Activity  Point\n';
                     }
                     resultText = resultText + ((i + 1) + '- ' + results.rows[i].user + ' ' + results.rows[i].activity + ' ' + results.rows[i].point + '\n');
+                }
+                return resolve(resultText);
+            }
+        );
+    });
+}
+
+async function getMostActiveActivityOfUser() {
+    return new Promise((resolve, reject) => {
+        pool.query(
+            "SELECT DISTINCT ON (user_id) user_id, activity_id, cnt, u.name, a.name AS activity_name FROM (SELECT  user_id, activity_id, cnt, RANK() OVER (PARTITION BY user_id ORDER BY cnt DESC) AS rn FROM ( SELECT user_id, activity_id, COUNT(activity_id) AS cnt FROM user_activity WHERE created_on >= (NOW() - interval '1 hour') GROUP BY user_id, activity_id) t) s INNER JOIN users u ON s.user_id = u.id INNER JOIN activity a ON s.activity_id = a.id WHERE s.rn = 1",
+            [],
+            (error, results) => {
+                if (error) {
+                    return reject(new Error(error.message));
+                }
+                var resultText = '';
+                for (i = 0; i < results.rows.length; i++) {
+                    if (i == 0) {
+                        resultText = resultText + '\n\n\n\n Most Active Activities Of Users - Count \n\n';
+                    }
+                    resultText = resultText + results.rows[i].name + '  ' + results.rows[i].activity_name + ' - ' + results.rows[i].cnt + '\n';
                 }
                 return resolve(resultText);
             }

@@ -3,7 +3,7 @@ const validateCommandInput = (time) => {
     return new Error('No time value (as number) found in the message')
   }
 
-  if (time.length > 5) {
+  if (time.length > 3) {
     return new Error('Dude !\nHow did you do that much.\nPlease enter a value under 1000')
   }
 }
