@@ -6,10 +6,20 @@ This is a sample project for a simple slash command to track your activities as 
 
 ### Create a Slack app
 
-1. Save you `/running` time ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_2.png)
-2. List Leaderboard ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_1.png)
-3. List Most Active Users ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_1.png)
-4. We kindly warn you if something goes wrong :) ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_3.png) ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_4.png)
+1. Save you `/running` time 
+![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_2.png)
+
+2. List Leaderboard 
+![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_1.png)
+
+3. List Most Active Users 
+![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_1.png)
+
+4. We kindly warn you if something goes wrong :) 
+![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_3.png) 
+
+![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_4.png)
+
 
 ---
 
