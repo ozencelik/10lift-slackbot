@@ -58,26 +58,32 @@ app.post('/', async (req, res) => {
     const time = commandParser(body.text)
     const properResponse = await getProperResponse(body.command, body.user_id, body.user_name, time);
 
-
-    if (body.command != '/leaderboard') {
-        let error
-        if ((error = validateCommandInput(time))) {
+    switch (body.command) {
+        case '/running':
+        case '/biking':
+            let error
+            if ((error = validateCommandInput(time))) {
+                res.json({
+                    text: '',
+                    attachments: [createErrorAttachment(error)]
+                });
+            }
             res.json({
-                text: '',
-                attachments: [createErrorAttachment(error)]
+                text: 'Your activity time saved successfully !',
+                attachments: [createAttachment(properResponse)]
             });
-        }
-        res.json({
-            text: 'Your activity time saved successfully !',
-            attachments: [createAttachment(properResponse)]
-        });
-    }
-    else {
-        res.json({
-            response_type: 'in_channel',
-            text: '----- Top 3 -----',
-            attachments: [createAttachment(properResponse)]
-        });
+        case '/leaderboard':
+            res.json({
+                response_type: 'in_channel',
+                text: '----- Top 3 -----',
+                attachments: [createAttachment(properResponse)]
+            });
+        case '/mostactiveacitiviesofusers':
+            res.json({
+                response_type: 'in_channel',
+                text: '----- Most Active Activities Of User  -----',
+                attachments: [createAttachment(properResponse)]
+            });
     }
 })
 

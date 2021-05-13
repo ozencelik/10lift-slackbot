@@ -14,8 +14,10 @@ async function properResponse(command, user_id, user_name, time) {
             return 'Recorded !';
         case '/leaderboard':
             const leaderboardResult = await getLeaderboard();
+            return leaderboardResult;
+        case '/mostactiveacitiviesofusers':
             const mostActiveUsersResult = await getMostActiveActivityOfUser();
-            return leaderboardResult + mostActiveUsersResult;
+            return mostActiveUsersResult;
         default:
             return new Error('Command not found')
     }
@@ -135,7 +137,7 @@ async function getMostActiveActivityOfUser() {
                 var resultText = '';
                 for (i = 0; i < results.rows.length; i++) {
                     if (i == 0) {
-                        resultText = resultText + '\n\n\n\n Most Active Activities Of Users - Count \n\n';
+                        resultText = resultText + '\n\n\n User  Activity - Count \n\n';
                     }
                     resultText = resultText + results.rows[i].name + '  ' + results.rows[i].activity_name + ' - ' + results.rows[i].cnt + '\n';
                 }

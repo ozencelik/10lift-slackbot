@@ -1,12 +1,12 @@
 # Activity Tracking Slash Command App for Slack
 
-This is a sample project for a simple slash command to track your activities as a team on Slack. The app lets a user to type `/running` and/or `/biking` slash command to record the activity, as well as showing the leaderboards with `/leaderboard` command and most active acitivities for each user with `/mostactiveusers` command as a public slack message.
+This is a sample project for a simple slash command to track your activities as a team on Slack. The app lets a user to type `/running` and/or `/biking` slash command to record the activity, as well as showing the leaderboards with `/leaderboard` command and most active acitivities for each user with `/mostactiveacitiviesofusers` command as a public slack message.
 
 ## Sample messages
 
 ### Create a Slack app
 
-1. Save you `/running` time 
+1. Save your `/running` time 
 ---
 ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_2.png)
 
@@ -16,7 +16,7 @@ This is a sample project for a simple slash command to track your activities as 
 
 3. List Most Active Users 
 ---
-![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_1.png)
+![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_8.png)
 
 4. We kindly warn you if something goes wrong :) 
 ---
@@ -45,6 +45,8 @@ This is a sample project for a simple slash command to track your activities as 
     * Short description: `Track your running time !`
     * Usage hint: `[ur running time in minute]`
 3. Save
-4. Sample screenshot ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_6.png)
+4. Sample screenshot 
+---
+![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_6.png)
 
 
