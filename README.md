@@ -4,21 +4,19 @@ This is a sample project for a simple slash command to track your activities as 
 
 ## Sample messages
 
-### Create a Slack app
-
-1. Save your `/running` time 
+### 1. Save your `/running` time 
 ---
 ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_2.png)
 
-2. List Leaderboard 
+### 2. List Leaderboard 
 ---
 ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_1.png)
 
-3. List Most Active Users 
+### 3. List Most Active Users 
 ---
 ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_8.png)
 
-4. We kindly warn you if something goes wrong :) 
+### 4. We kindly warn you if something goes wrong :) 
 ---
 ![alt text](https://github.com/ozencelik/10lift-slackbot/blob/main/public/Screenshot_3.png) 
 
@@ -41,7 +39,7 @@ This is a sample project for a simple slash command to track your activities as 
 1. Go back to the app settings and click on Slash Commands.
 2. Click the 'Create New Command' button and fill in the following:
     * Command: `/running`
-    * Request URL: [https://f62b621797bb.ngrok.io]
+    * Request URL: [Will be provided by Özenç]
     * Short description: `Track your running time !`
     * Usage hint: `[ur running time in minute]`
 3. Save
